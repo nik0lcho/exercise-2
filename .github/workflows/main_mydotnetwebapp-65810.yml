@@ -41,23 +41,13 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
       
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D0FF6AFC3AAC4C76894E533AE3B31651 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4EF1ED1328EA4B0D8FEBD69052D89A23 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_00282AEE9B0943E7854D50C6B8CB9E27 }}
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -65,4 +55,4 @@ jobs:
           app-name: 'mydotnetwebapp-65810'
           slot-name: 'Production'
           package: .
-          
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BB4CDF3F67564621A3FD39B805EA53FA }}
